@@ -48,6 +48,9 @@ async def get_all_base_models(request: Request, user: UserModel = None):
     function_task = get_function_models(request)
 
     openai_models, function_models = await asyncio.gather(openai_task, function_task)
+    openai_models, function_models = await asyncio.gather(
+        openai_task, function_task
+    )
 
     return function_models + openai_models
 

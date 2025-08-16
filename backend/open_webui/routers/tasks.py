@@ -215,13 +215,7 @@ async def generate_title(
         "model": task_model_id,
         "messages": [{"role": "user", "content": content}],
         "stream": False,
-        **(
-            {"max_tokens": max_tokens}
-            if models[task_model_id].get("owned_by") == "ollama"
-            else {
-                "max_completion_tokens": max_tokens,
-            }
-        ),
+        "max_completion_tokens": max_tokens,
         "metadata": {
             **(request.state.metadata if hasattr(request.state, "metadata") else {}),
             "task": str(TASKS.TITLE_GENERATION),
@@ -688,13 +682,7 @@ async def generate_emoji(
         "model": task_model_id,
         "messages": [{"role": "user", "content": content}],
         "stream": False,
-        **(
-            {"max_tokens": 4}
-            if models[task_model_id].get("owned_by") == "ollama"
-            else {
-                "max_completion_tokens": 4,
-            }
-        ),
+        "max_completion_tokens": 4,
         "metadata": {
             **(request.state.metadata if hasattr(request.state, "metadata") else {}),
             "task": str(TASKS.EMOJI_GENERATION),
