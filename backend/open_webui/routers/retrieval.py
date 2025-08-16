@@ -249,6 +249,7 @@ class OpenAIConfigForm(BaseModel):
     url: str
     key: str
 
+
 class AzureOpenAIConfigForm(BaseModel):
     url: str
     key: str
@@ -306,10 +307,24 @@ async def update_embedding_config(
             request.app.state.config.RAG_EMBEDDING_MODEL,
         )
 
+        base_url = None
+        api_key = None
+        azure_api_version = None
+        if request.app.state.config.RAG_EMBEDDING_ENGINE == "openai":
+            base_url = request.app.state.config.RAG_OPENAI_API_BASE_URL
+            api_key = request.app.state.config.RAG_OPENAI_API_KEY
+        elif request.app.state.config.RAG_EMBEDDING_ENGINE == "azure_openai":
+            base_url = request.app.state.config.RAG_AZURE_OPENAI_BASE_URL
+            api_key = request.app.state.config.RAG_AZURE_OPENAI_API_KEY
+            azure_api_version = request.app.state.config.RAG_AZURE_OPENAI_API_VERSION
+
         request.app.state.EMBEDDING_FUNCTION = get_embedding_function(
             request.app.state.config.RAG_EMBEDDING_ENGINE,
             request.app.state.config.RAG_EMBEDDING_MODEL,
             request.app.state.ef,
+            base_url,
+            api_key,
+
             (
                 request.app.state.config.RAG_OPENAI_API_BASE_URL
                 if request.app.state.config.RAG_EMBEDDING_ENGINE == "openai"
@@ -321,11 +336,7 @@ async def update_embedding_config(
                 else request.app.state.config.RAG_AZURE_OPENAI_API_KEY
             ),
             request.app.state.config.RAG_EMBEDDING_BATCH_SIZE,
-            azure_api_version=(
-                request.app.state.config.RAG_AZURE_OPENAI_API_VERSION
-                if request.app.state.config.RAG_EMBEDDING_ENGINE == "azure_openai"
-                else None
-            ),
+            azure_api_version=azure_api_version,
         )
 
         return {
@@ -1234,10 +1245,24 @@ def save_docs_to_vector_db(
                 return True
 
         log.info(f"adding to collection {collection_name}")
+        base_url = None
+        api_key = None
+        azure_api_version = None
+        if request.app.state.config.RAG_EMBEDDING_ENGINE == "openai":
+            base_url = request.app.state.config.RAG_OPENAI_API_BASE_URL
+            api_key = request.app.state.config.RAG_OPENAI_API_KEY
+        elif request.app.state.config.RAG_EMBEDDING_ENGINE == "azure_openai":
+            base_url = request.app.state.config.RAG_AZURE_OPENAI_BASE_URL
+            api_key = request.app.state.config.RAG_AZURE_OPENAI_API_KEY
+            azure_api_version = request.app.state.config.RAG_AZURE_OPENAI_API_VERSION
+
         embedding_function = get_embedding_function(
             request.app.state.config.RAG_EMBEDDING_ENGINE,
             request.app.state.config.RAG_EMBEDDING_MODEL,
             request.app.state.ef,
+            base_url,
+            api_key,
+
             (
                 request.app.state.config.RAG_OPENAI_API_BASE_URL
                 if request.app.state.config.RAG_EMBEDDING_ENGINE == "openai"
@@ -1249,11 +1274,7 @@ def save_docs_to_vector_db(
                 else request.app.state.config.RAG_AZURE_OPENAI_API_KEY
             ),
             request.app.state.config.RAG_EMBEDDING_BATCH_SIZE,
-            azure_api_version=(
-                request.app.state.config.RAG_AZURE_OPENAI_API_VERSION
-                if request.app.state.config.RAG_EMBEDDING_ENGINE == "azure_openai"
-                else None
-            ),
+            azure_api_version=azure_api_version,
         )
 
         embeddings = embedding_function(
