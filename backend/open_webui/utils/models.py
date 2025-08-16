@@ -62,18 +62,13 @@ async def get_all_base_models(request: Request, user: UserModel = None):
         if request.app.state.config.ENABLE_OPENAI_API
         else asyncio.sleep(0, result=[])
     )
-    ollama_task = (
-        fetch_ollama_models(request, user)
-        if request.app.state.config.ENABLE_OLLAMA_API
-        else asyncio.sleep(0, result=[])
-    )
     function_task = get_function_models(request)
 
-    openai_models, ollama_models, function_models = await asyncio.gather(
-        openai_task, ollama_task, function_task
+    openai_models, function_models = await asyncio.gather(
+        openai_task, function_task
     )
 
-    return function_models + openai_models + ollama_models
+    return function_models + openai_models
 
 
 async def get_all_models(request, refresh: bool = False, user: UserModel = None):
