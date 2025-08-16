@@ -249,12 +249,6 @@ class OpenAIConfigForm(BaseModel):
     url: str
     key: str
 
-
-class OllamaConfigForm(BaseModel):
-    url: str
-    key: str
-
-
 class AzureOpenAIConfigForm(BaseModel):
     url: str
     key: str
@@ -263,7 +257,6 @@ class AzureOpenAIConfigForm(BaseModel):
 
 class EmbeddingModelUpdateForm(BaseModel):
     openai_config: Optional[OpenAIConfigForm] = None
-    ollama_config: Optional[OllamaConfigForm] = None
     azure_openai_config: Optional[AzureOpenAIConfigForm] = None
     embedding_engine: str
     embedding_model: str
@@ -282,7 +275,6 @@ async def update_embedding_config(
         request.app.state.config.RAG_EMBEDDING_MODEL = form_data.embedding_model
 
         if request.app.state.config.RAG_EMBEDDING_ENGINE in [
-            "ollama",
             "openai",
             "azure_openai",
         ]:

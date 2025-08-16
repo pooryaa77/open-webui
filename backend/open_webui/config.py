@@ -875,6 +875,7 @@ ENABLE_DIRECT_CONNECTIONS = PersistentConfig(
 )
 
 ####################################
+
 # OPENAI_API
 ####################################
 
@@ -2461,6 +2462,7 @@ RAG_AZURE_OPENAI_API_VERSION = PersistentConfig(
     "rag.azure_openai.api_version",
     os.getenv("RAG_AZURE_OPENAI_API_VERSION", ""),
 )
+
 ENABLE_RAG_LOCAL_WEB_FETCH = (
     os.getenv("ENABLE_RAG_LOCAL_WEB_FETCH", "False").lower() == "true"
 )

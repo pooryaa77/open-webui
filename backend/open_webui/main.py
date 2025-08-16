@@ -63,7 +63,6 @@ from open_webui.socket.main import (
 from open_webui.routers import (
     audio,
     images,
-    ollama,
     openai,
     retrieval,
     pipelines,
@@ -607,8 +606,6 @@ if ENABLE_OTEL:
 
 
 ########################################
-#
-# OLLAMA
 
 app.state.config.ENABLE_OLLAMA_API = False
 app.state.config.OLLAMA_BASE_URLS = []
@@ -616,7 +613,7 @@ app.state.config.OLLAMA_API_CONFIGS = {}
 app.state.OLLAMA_MODELS = {}
 
 ########################################
-#
+
 # OPENAI
 #
 ########################################
@@ -1178,7 +1175,6 @@ app.add_middleware(
 app.mount("/ws", socket_app)
 
 
-app.include_router(ollama.router, prefix="/ollama", tags=["ollama"])
 app.include_router(openai.router, prefix="/openai", tags=["openai"])
 
 
