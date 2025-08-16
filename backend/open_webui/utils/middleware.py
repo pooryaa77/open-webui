@@ -708,22 +708,18 @@ def apply_params_to_form_data(form_data, model):
         # If custom_params are provided, merge them into params
         params = deep_update(params, custom_params)
 
-    if model.get("owned_by") == "ollama":
-        # Ollama specific parameters
-        form_data["options"] = params
-    else:
-        if isinstance(params, dict):
-            for key, value in params.items():
-                if value is not None:
-                    form_data[key] = value
+    if isinstance(params, dict):
+        for key, value in params.items():
+            if value is not None:
+                form_data[key] = value
 
-        if "logit_bias" in params and params["logit_bias"] is not None:
-            try:
-                form_data["logit_bias"] = json.loads(
-                    convert_logit_bias_input_to_json(params["logit_bias"])
-                )
-            except Exception as e:
-                log.exception(f"Error parsing logit_bias: {e}")
+    if "logit_bias" in params and params["logit_bias"] is not None:
+        try:
+            form_data["logit_bias"] = json.loads(
+                convert_logit_bias_input_to_json(params["logit_bias"])
+            )
+        except Exception as e:
+            log.exception(f"Error parsing logit_bias: {e}")
 
     return form_data
 
@@ -997,20 +993,12 @@ async def process_chat_payload(request, form_data, user, metadata, model):
         else:
             # Workaround for Ollama 2.0+ system prompt issue
             # TODO: replace with add_or_update_system_message
-            if model.get("owned_by") == "ollama":
-                form_data["messages"] = prepend_to_first_user_message_content(
-                    rag_template(
-                        request.app.state.config.RAG_TEMPLATE, context_string, prompt
-                    ),
-                    form_data["messages"],
-                )
-            else:
-                form_data["messages"] = add_or_update_system_message(
-                    rag_template(
-                        request.app.state.config.RAG_TEMPLATE, context_string, prompt
-                    ),
-                    form_data["messages"],
-                )
+            form_data["messages"] = add_or_update_system_message(
+                rag_template(
+                    request.app.state.config.RAG_TEMPLATE, context_string, prompt
+                ),
+                form_data["messages"],
+            )
 
     # If there are citations, add them to the data_items
     sources = [
