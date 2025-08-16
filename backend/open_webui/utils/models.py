@@ -47,6 +47,7 @@ async def get_all_base_models(request: Request, user: UserModel = None):
     )
     function_task = get_function_models(request)
 
+    openai_models, function_models = await asyncio.gather(openai_task, function_task)
     openai_models, function_models = await asyncio.gather(
         openai_task, function_task
     )
@@ -160,10 +161,7 @@ async def get_all_models(request, refresh: bool = False, user: UserModel = None)
             filter_ids = []
 
             for model in models:
-                if (
-                    custom_model.base_model_id == model["id"]
-                    or custom_model.base_model_id == model["id"].split(":")[0]
-                ):
+                if custom_model.base_model_id == model["id"]:
                     owned_by = model.get("owned_by", "unknown owner")
                     if "pipe" in model:
                         pipe = model["pipe"]
