@@ -606,7 +606,14 @@ if ENABLE_OTEL:
 
 
 ########################################
-#
+
+app.state.config.ENABLE_OLLAMA_API = False
+app.state.config.OLLAMA_BASE_URLS = []
+app.state.config.OLLAMA_API_CONFIGS = {}
+app.state.OLLAMA_MODELS = {}
+
+########################################
+
 # OPENAI
 #
 ########################################
@@ -818,6 +825,7 @@ app.state.config.RAG_OPENAI_API_KEY = RAG_OPENAI_API_KEY
 app.state.config.RAG_AZURE_OPENAI_BASE_URL = RAG_AZURE_OPENAI_BASE_URL
 app.state.config.RAG_AZURE_OPENAI_API_KEY = RAG_AZURE_OPENAI_API_KEY
 app.state.config.RAG_AZURE_OPENAI_API_VERSION = RAG_AZURE_OPENAI_API_VERSION
+
 
 app.state.config.PDF_EXTRACT_IMAGES = PDF_EXTRACT_IMAGES
 
